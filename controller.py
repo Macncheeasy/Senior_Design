@@ -64,6 +64,8 @@ def getCurrentState():
     data = cur.fetchone()  # (1, u'on')
     return data[1]
 
+
+
 # Store current state in DB
 def setCurrentState(val):
     query = 'UPDATE myapp_state set name = "'+val+'"' #Update statement updates columns of existing rows in the named table
@@ -88,6 +90,9 @@ def runManualMode(): #this mode is used if we want to manually adjust the light
     elif currentState == 'off':
         print 'Manual - Off'
         switchOffLight(LIGHT_PIN)
+    elif currentState == 'yes':
+		print 'Manual - Yes'
+		switchOffLight(LIGHT_PIN)
 
 def runAutoMode():
     # Read LDR

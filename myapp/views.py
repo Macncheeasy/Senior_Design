@@ -40,6 +40,17 @@ def home(request):
         result = r.text
         output = json.loads(result)
         out = output['name']
+    if 'yes' in request.POST:
+        values = {"name": "yes"}
+        
+        #This puts the data at the location state/1/ and the information
+        #placed here is the values, 'on' and is authorized by the user        
+        r = requests.put('http://127.0.0.1:8000/state/1/',
+                        data=values, auth=('pi', 'Letsgorams1!'))
+        result = r.text
+        output = json.loads(result)
+        out = output['name']
+        
     if 'off' in request.POST:
         values = {"name": "off"}
         r = requests.put('http://127.0.0.1:8000/state/1/',
