@@ -59,11 +59,29 @@ def getCurrentMode():
 
 # Get current state from DB
 def getCurrentState():
-    print('2nd')
+    print('GetCurrentState')
     cur.execute('SELECT * FROM myapp_state')
     data = cur.fetchone()  # (1, u'on')
     return data[1]
 
+#~ this is designed to get the value, either 0 or 1, which is whether or not to "Make the coffee"
+def getRun():
+    print('getRun')
+    cur.execute('SELECT * FROM run')
+    data = cur.fetchone()  # (1, u'on')
+    #~ print(data)
+    return data[0]
+
+#~ This is used to reset the counter 'Run' back to zero after the process has been done
+#~ the reason for this is so after someone "orders coffee" the product will not dispense again until
+#it has to or is prompted by the API
+def setRun():
+    query = 'UPDATE run set name = 0 where name = 1'
+    cur.execute(query)
+    #~ dont really need just a check (code below)
+    cur.execute('SELECT * FROM run')
+    data = cur.fetchone() 
+    print data[0]
 
 
 # Store current state in DB
@@ -82,7 +100,7 @@ def switchOffLight(PIN):
 
 def runManualMode(): #this mode is used if we want to manually adjust the light 
     # Get current state from DB
-    print('1.5')
+    print('RunManualMode')
     currentState = getCurrentState()
     if currentState == 'on':
         print 'Manual - On'
@@ -94,26 +112,22 @@ def runManualMode(): #this mode is used if we want to manually adjust the light
 		print 'Manual - Yes'
 		switchOffLight(LIGHT_PIN)
 
-def runAutoMode():
-    # Read LDR
-    lightlevel = readLDR()
-    if lightlevel < threshold:
-        print 'Auto - On (lux=%d)' % lightlevel
-        switchOnLight(LIGHT_PIN)
-    else:
-        print 'Auto - Off (lux=%d)' % lightlevel
-        switchOffLight(LIGHT_PIN)
-
 # Controller main function
 def runController():
-    print('1st')
-    currentMode = getCurrentMode()
-    if currentMode == 'auto':
-        runManualMode()
-        print('auto')
-    elif currentMode == 'manual':
-        print('manual')
-        runManualMode()
+    print('RunController')
+    run = getRun();
+    if run == 1:
+    #~ if the count is 1 run this 
+		currentMode = getCurrentMode()
+		if currentMode == 'auto':
+			print('auto')
+			setRun() #issue with this function wont let other buttons write to DB, causes error in home
+			#~ make the count equal to zero
+		elif currentMode == 'manual':
+			print('manual')
+			runManualMode()
+			setRun()
+			#~ make the count equal to zero
 		
     return True
 
