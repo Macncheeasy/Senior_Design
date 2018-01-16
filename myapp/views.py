@@ -4,10 +4,16 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
-from myapp.models import Mode, State
+from myapp.models import Mode
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponseRedirect
+from django import forms
+from .forms import UserRegistrationForm
 from rest_framework import viewsets
 from django.template import RequestContext
-from myapp.serializers import ModeSerializer, StateSerializer
+from django.template.response import TemplateResponse
+from myapp.serializers import ModeSerializer
 import requests #this is used to ping a website or portal for information
 import json
 
@@ -20,75 +26,97 @@ class ModeViewSet(viewsets.ModelViewSet):
     queryset = Mode.objects.all()
         #used for validating and deserializing input
     serializer_class = ModeSerializer
-
-class StateViewSet(viewsets.ModelViewSet):
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
+    
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            userObj = form.cleaned_data
+            username = userObj['username']
+            email =  userObj['email']
+            password =  userObj['password']
+            if not (User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists()):
+                User.objects.create_user(username, email, password)
+                user = authenticate(username = username, password = password)
+                login(request, user)
+                return HttpResponseRedirect('/')
+            else:
+                raise forms.ValidationError('Looks like a username with that email or password already exists')
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'register.html', {'form' : form})
 
 def home(request):
-    out = ''
-    currentmode = 'auto'
-    currentstate = 'off'
-#if on is put in the field, within the Posted Data  
-    if 'on' in request.POST:
-        values = {"name": "on"}
+    #Not sure if i needed this stuff, lou included it
+    #~ run = ''
+    #~ currentmode = 'auto'
+    #~ currentstate = 'off'
+    
+#if on is put in the field, within the Posted Data , this calls from the
+#index.html forum  submission
+    if 'run' in request.POST:
+        
+        values = {"run": 1}
         
         #This puts the data at the location state/1/ and the information
         #placed here is the values, 'on' and is authorized by the user        
-        r = requests.put('http://127.0.0.1:8000/state/1/',
+        r = requests.put('http://127.0.0.1:8000/mode/1/',
                         data=values, auth=('pi', 'Letsgorams1!'))
         result = r.text
         output = json.loads(result)
-        out = output['name']
-    if 'yes' in request.POST:
-        values = {"name": "yes"}
+        out = output['run']
+    
+    
+    if 'yes milk' in request.POST:
+        values = {"milk": "yes"}
         
         #This puts the data at the location state/1/ and the information
         #placed here is the values, 'on' and is authorized by the user        
-        r = requests.put('http://127.0.0.1:8000/state/1/',
+        r = requests.put('http://127.0.0.1:8000/mode/1/',
                         data=values, auth=('pi', 'Letsgorams1!'))
         result = r.text
         output = json.loads(result)
-        out = output['name']
+        out = output['milk']
+    if 'no milk' in request.POST:
+        values = {"milk": "no"}
         
-    if 'off' in request.POST:
-        values = {"name": "off"}
-        r = requests.put('http://127.0.0.1:8000/state/1/',
+        #This puts the data at the location state/1/ and the information
+        #placed here is the values, 'on' and is authorized by the user        
+        r = requests.put('http://127.0.0.1:8000/mode/1/',
                         data=values, auth=('pi', 'Letsgorams1!'))
         result = r.text
         output = json.loads(result)
-        out = output['name']
-    
-    
-    if 'auto' in request.POST:
-        values = {"name": "auto"}
+        out = output['milk']
+        
+    if 'yes sugar' in request.POST:
+        values = {"sugar": "yes"}
         #This puts the data at the location mode/1/ and the information
         #placed here is the values, auto and is authorized by the user
         r = requests.put('http://127.0.0.1:8000/mode/1/',
                         data=values, auth=('pi', 'Letsgorams1!'))
         result = r.text
         output = json.loads(result)
-        out = output['name']
-    if 'manual' in request.POST:
-        values = {"name": "manual"}
+        out = output['sugar']
+    if 'no sugar' in request.POST:
+        values = {"sugar": "no"}
         r = requests.put('http://127.0.0.1:8000/mode/1/',
                         data=values, auth=('pi', 'Letsgorams1!'))
         result = r.text
         output = json.loads(result)
-        out = output['name']
+        out = output['sugar']
 
     r = requests.get('http://127.0.0.1:8000/mode/1/',
                     auth=('pi', 'Letsgorams1!'))
     result = r.text
     output = json.loads(result)
-    currentmode = output['name']
+    name = output['name']
+    sugarpref = output['sugar']
+    milkpref = output['milk']
+    currentrun = output['run']
 
-    r = requests.get('http://127.0.0.1:8000/state/1/',
-                    auth=('pi', 'Letsgorams1!'))
-    result = r.text
-    output = json.loads(result)
-    currentstate = output['name']
-	
-	#Returns the values Analyzed 
-    return render(request, 'myapp/index.html', {'name':out,
-    'currentmode':currentmode, 'currentstate':currentstate})
+    #~ return TemplateResponse(request, 'myapp/index.html', {'run':currentrun,
+    #~ 'currentmode':currentmode, 'currentstate':currentstate})
+    
+	#Returns the values Analyzed #This goes to the html
+    return render(request, 'index.html', {'name':name,'run':currentrun,
+    'sugarpref':sugarpref, 'milkpref':milkpref})

@@ -15,10 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+#~ from django.urls import path
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.models import User
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.views.generic.base import RedirectView
 from rest_framework import routers
 from myapp import views
+
 
 admin.autodiscover()
 
@@ -27,7 +31,6 @@ router = routers.DefaultRouter()
 #Two arguments needed for register(), a prefix:url prefix to use for this set of routes
 #viewset: a viewset class
 router.register(r'mode', views.ModeViewSet)
-router.register(r'state', views.StateViewSet)
 
 urlpatterns = [
     url(r'^favicon.ico$', RedirectView.as_view(
@@ -38,4 +41,10 @@ urlpatterns = [
                                namespace='rest_framework')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^home/', views.home),
+    url(r'^register/', views.register, name='register'),
+    url(r'^login/', auth_views.login, name='login'),
+    url(r'^logout/', auth_views.login, name='logout'),
+    
+    
+    #~ url(r'^logout/$', auth_views.logout, name='logout'),
 ]

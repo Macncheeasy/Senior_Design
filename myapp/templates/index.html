@@ -1,0 +1,110 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<p>{{r}}</p>
+
+<!--
+the csrf_token protects against cross site request forgeries
+type subit is used to submit a form to the server
+-->
+<div class="jumbotron text-center">
+
+<h1>Hello {{name}}!</h1>
+<br> 
+<h2> Please Select your Coffee preferences</h2>
+
+</div>
+<div class="text-center">
+
+<form action="" method="post">{% csrf_token %} 
+<h3>Do You Want the Usual? </h3>
+<input type="submit" name="run" value="Yes" />
+</form>
+
+<br>
+
+
+<div class="btn btn-primary" data-toggle="collapse" href="#collapse" aria-expanded="false" aria-controls="collapseExample" >
+
+  <a >
+    Change Coffee Preference
+  </a>
+</div>
+</div> 
+
+<div class="text-center container">
+<div class="collapse" id="collapse">
+<br>
+
+<!--
+<form action="" method="post">{% csrf_token %} 
+<h3>Do you Want Milk? Current Preference is: {{milkpref}}</h3>
+<input type= "button" class= "btn btn-primary" name="yes milk" value="Yes" />
+<input type="button" class= "btn btn-success" name="no milk" value="No" />
+
+-->
+
+<!--
+the radio buttons will only allow one to be selected if they have the same name tag
+-->
+<form action="" method="post">{% csrf_token %} 
+<h3>Do you Want Milk? Current Preference is: {{milkpref}}</h3>
+<input type= "radio" name="yes milk" value="Yes"> Yes
+<input type="radio" name="no milk" value="No"> No 
+
+<h3>Do you Want Sugar? Current Preference is: {{sugarpref}}</h3>
+<input type= "radio" name="yes sugar" value="Yes" > Yes
+<input type="radio" name="no sugar" value="No"> No 
+<!--
+<input type="button" class= "btn btn-primary" name="yes sugar" value="Yes" />
+<input type="button" class= "btn btn-success" name="no sugar" value="No" />
+-->
+
+<h3>Submit Coffee Order? </h3>
+<input type="submit"/>
+</form>
+
+
+</form>	
+		
+<br>
+<!--
+
+<h3>Do You Want Sugar? Current Preference is: {{sugarpref}}</h3>
+<form action="" method="post">{% csrf_token %}
+<input type="submit" class= "btn btn-primary" name="yes sugar" value="Yes" />
+<input type="submit" class= "btn btn-success" name="no sugar" value="No" />
+</form>
+
+<br>
+
+<form action="" method="post">{% csrf_token %} 
+<h3>Submit Coffee Order? </h3>
+<input type="submit" name="run" value="Yes" />
+</form>
+</div>
+</div>
+
+<form>
+
+<input type="radio" name="gender" value="male"> Male<br>
+<input type="radio" name="gender" value="women"> Women<br>
+</form>
+-->
+
+<br>
+
+</div>
+
+</div>
+
+{% endblock %}
+<!--
+
+put these at the end of the html to increase responsivness
+-->
+<!--
+

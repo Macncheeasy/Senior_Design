@@ -1,4 +1,4 @@
-from myapp.models import Mode, State
+from myapp.models import Mode
 from rest_framework import serializers
 
 #Serializers allow complex data such as querysets and model instances to be 
@@ -9,9 +9,5 @@ from rest_framework import serializers
 class ModeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Mode
-        fields = ('url', 'name')
+        fields = ('url','name', 'milk','sugar', 'run')
 
-class StateSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = State
-        fields = ('url', 'name')

@@ -52,36 +52,35 @@ LIGHT_PIN = 13
 
 
 # Get current mode from DB
-def getCurrentMode():
+def getsugarpref():
+    print('getsugarpref')
     cur.execute('SELECT * FROM myapp_mode') #this selects all of the fields available in the table, if want specific use SELECT column1, column2 FROM table_name
     data = cur.fetchone()  # (1, u'auto') #This method retrieves the next row of a query result set and returns a single sequence or None if no more rows available
-    return data[1]
+    return data[3]
 
 # Get current state from DB
-def getCurrentState():
-    print('GetCurrentState')
-    cur.execute('SELECT * FROM myapp_state')
+def getmilkpref():
+    print('getmilkpref')
+    cur.execute('SELECT * FROM myapp_mode')
     data = cur.fetchone()  # (1, u'on')
-    return data[1]
+    return data[2]
 
 #~ this is designed to get the value, either 0 or 1, which is whether or not to "Make the coffee"
 def getRun():
     print('getRun')
-    cur.execute('SELECT * FROM run')
+    cur.execute('SELECT * FROM myapp_mode')
     data = cur.fetchone()  # (1, u'on')
     #~ print(data)
-    return data[0]
+    return data[1]
 
 #~ This is used to reset the counter 'Run' back to zero after the process has been done
 #~ the reason for this is so after someone "orders coffee" the product will not dispense again until
 #it has to or is prompted by the API
 def setRun():
-    query = 'UPDATE run set name = 0 where name = 1'
+    query = 'UPDATE myapp_mode set run = 0'
     cur.execute(query)
     #~ dont really need just a check (code below)
-    cur.execute('SELECT * FROM run')
-    data = cur.fetchone() 
-    print data[0]
+    #~ For these databases the 1 i.e. the first entry takes the place holder for the [0]
 
 
 # Store current state in DB
@@ -98,37 +97,27 @@ def switchOffLight(PIN):
     GPIO.setup(PIN, GPIO.OUT)
     GPIO.output(PIN, 0)
 
-def runManualMode(): #this mode is used if we want to manually adjust the light 
-    # Get current state from DB
-    print('RunManualMode')
-    currentState = getCurrentState()
-    if currentState == 'on':
-        print 'Manual - On'
-        switchOnLight(LIGHT_PIN)
-    elif currentState == 'off':
-        print 'Manual - Off'
-        switchOffLight(LIGHT_PIN)
-    elif currentState == 'yes':
-		print 'Manual - Yes'
-		switchOffLight(LIGHT_PIN)
-
-# Controller main function
+    # Controller main function
 def runController():
-    print('RunController')
     run = getRun();
     if run == 1:
     #~ if the count is 1 run this 
-		currentMode = getCurrentMode()
-		if currentMode == 'auto':
-			print('auto')
-			setRun() #issue with this function wont let other buttons write to DB, causes error in home
+		milkpref = getmilkpref()
+		if milkpref == 'yes':
+			print 'Yes Milk'
+		elif milkpref == 'no':
+			print 'No Milk'
+		sugarpref = getsugarpref()
+		if sugarpref == 'yes':
+			print('Yes Sugar')
+			#~ setRun() #issue with this function wont let other buttons write to DB, causes error in home
 			#~ make the count equal to zero
-		elif currentMode == 'manual':
-			print('manual')
-			runManualMode()
-			setRun()
+		elif sugarpref == 'no':
+			print('No Sugar')
+			#~ setRun()
 			#~ make the count equal to zero
-		
+
+	
     return True
 
 while True:
