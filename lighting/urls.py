@@ -1,5 +1,4 @@
 """lighting URL Configuration
-
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
 Examples:
@@ -30,7 +29,7 @@ admin.autodiscover()
 router = routers.DefaultRouter()
 #Two arguments needed for register(), a prefix:url prefix to use for this set of routes
 #viewset: a viewset class
-router.register(r'mode', views.ModeViewSet)
+router.register(r'profiles', views.ProfilesViewSet)
 
 urlpatterns = [
     url(r'^favicon.ico$', RedirectView.as_view(

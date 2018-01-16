@@ -54,21 +54,21 @@ LIGHT_PIN = 13
 # Get current mode from DB
 def getsugarpref():
     print('getsugarpref')
-    cur.execute('SELECT * FROM myapp_mode') #this selects all of the fields available in the table, if want specific use SELECT column1, column2 FROM table_name
+    cur.execute('SELECT * FROM myapp_profiles') #this selects all of the fields available in the table, if want specific use SELECT column1, column2 FROM table_name
     data = cur.fetchone()  # (1, u'auto') #This method retrieves the next row of a query result set and returns a single sequence or None if no more rows available
     return data[3]
 
 # Get current state from DB
 def getmilkpref():
     print('getmilkpref')
-    cur.execute('SELECT * FROM myapp_mode')
+    cur.execute('SELECT * FROM myapp_profiles')
     data = cur.fetchone()  # (1, u'on')
     return data[2]
 
 #~ this is designed to get the value, either 0 or 1, which is whether or not to "Make the coffee"
 def getRun():
     print('getRun')
-    cur.execute('SELECT * FROM myapp_mode')
+    cur.execute('SELECT * FROM myapp_profiles')
     data = cur.fetchone()  # (1, u'on')
     #~ print(data)
     return data[1]
@@ -77,7 +77,7 @@ def getRun():
 #~ the reason for this is so after someone "orders coffee" the product will not dispense again until
 #it has to or is prompted by the API
 def setRun():
-    query = 'UPDATE myapp_mode set run = 0'
+    query = 'UPDATE myapp_profiles set run = 0'
     cur.execute(query)
     #~ dont really need just a check (code below)
     #~ For these databases the 1 i.e. the first entry takes the place holder for the [0]

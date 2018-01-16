@@ -1,19 +1,23 @@
+
 # -*- coding: utf-8 -*-
 #This is essentially the controller of the application which is responsible for 
 #~ making sense of requests and producing the appropriate output
 from __future__ import unicode_literals
 
-from django.shortcuts import render
-from myapp.models import Mode
+from django.shortcuts import render, redirect
+from myapp.models import  UserCreationForm,  Profiles
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponseRedirect
+#~ from django.contrib.auth.forms import UserCreationForm
+#~ from myapp.forms import SignUpForm
+#~ from django.http import HttpResponseRedirect
 from django import forms
-from .forms import UserRegistrationForm
 from rest_framework import viewsets
 from django.template import RequestContext
 from django.template.response import TemplateResponse
-from myapp.serializers import ModeSerializer
+from myapp.serializers import ProfilesSerializer
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
 import requests #this is used to ping a website or portal for information
 import json
 
@@ -21,30 +25,30 @@ import json
 #Modelview sets extends the Generic APIView and provides actions
 #.list() .retrieve() .create() .update() .partial_update() and .destroy()
 
-class ModeViewSet(viewsets.ModelViewSet):
+class ProfilesViewSet(viewsets.ModelViewSet):
     #used to return objects from the view, this essentially gets the information put on Mode
-    queryset = Mode.objects.all()
+    queryset = Profiles.objects.all()
         #used for validating and deserializing input
-    serializer_class = ModeSerializer
+    serializer_class = ProfilesSerializer
     
 def register(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            userObj = form.cleaned_data
-            username = userObj['username']
-            email =  userObj['email']
-            password =  userObj['password']
-            if not (User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists()):
-                User.objects.create_user(username, email, password)
-                user = authenticate(username = username, password = password)
-                login(request, user)
-                return HttpResponseRedirect('/')
-            else:
-                raise forms.ValidationError('Looks like a username with that email or password already exists')
-    else:
-        form = UserRegistrationForm()
-    return render(request, 'register.html', {'form' : form})
+	if request.method == 'POST':
+		form = UserCreationForm(request.POST)
+		if form.is_valid():
+			#~ Once it reaches hear the user is created
+			form.save()
+			#These  pull the username and password from this form to be used
+			#To authenticate the userm if the username and password match, the 
+			#user is then logged in with function login()
+			username = form.cleaned_data.get('name')
+			raw_password = form.cleaned_data.get('password1')
+			user = authenticate(username=username, password=raw_password)
+			login(request, user)
+			return redirect('/home/')
+	else:
+		form = UserCreationForm()
+	return render(request, 'register.html', {'form': form})
+
 
 def home(request):
     #Not sure if i needed this stuff, lou included it
@@ -60,7 +64,7 @@ def home(request):
         
         #This puts the data at the location state/1/ and the information
         #placed here is the values, 'on' and is authorized by the user        
-        r = requests.put('http://127.0.0.1:8000/mode/1/',
+        r = requests.put('http://127.0.0.1:8000/profiles/1/',
                         data=values, auth=('pi', 'Letsgorams1!'))
         result = r.text
         output = json.loads(result)
@@ -72,7 +76,7 @@ def home(request):
         
         #This puts the data at the location state/1/ and the information
         #placed here is the values, 'on' and is authorized by the user        
-        r = requests.put('http://127.0.0.1:8000/mode/1/',
+        r = requests.put('http://127.0.0.1:8000/profiles/1/',
                         data=values, auth=('pi', 'Letsgorams1!'))
         result = r.text
         output = json.loads(result)
@@ -82,7 +86,7 @@ def home(request):
         
         #This puts the data at the location state/1/ and the information
         #placed here is the values, 'on' and is authorized by the user        
-        r = requests.put('http://127.0.0.1:8000/mode/1/',
+        r = requests.put('http://127.0.0.1:8000/profiles/1/',
                         data=values, auth=('pi', 'Letsgorams1!'))
         result = r.text
         output = json.loads(result)
@@ -92,20 +96,20 @@ def home(request):
         values = {"sugar": "yes"}
         #This puts the data at the location mode/1/ and the information
         #placed here is the values, auto and is authorized by the user
-        r = requests.put('http://127.0.0.1:8000/mode/1/',
+        r = requests.put('http://127.0.0.1:8000/profiles/1/',
                         data=values, auth=('pi', 'Letsgorams1!'))
         result = r.text
         output = json.loads(result)
         out = output['sugar']
     if 'no sugar' in request.POST:
         values = {"sugar": "no"}
-        r = requests.put('http://127.0.0.1:8000/mode/1/',
+        r = requests.put('http://127.0.0.1:8000/profiles/1/',
                         data=values, auth=('pi', 'Letsgorams1!'))
         result = r.text
         output = json.loads(result)
         out = output['sugar']
 
-    r = requests.get('http://127.0.0.1:8000/mode/1/',
+    r = requests.get('http://127.0.0.1:8000/profiles/1/',
                     auth=('pi', 'Letsgorams1!'))
     result = r.text
     output = json.loads(result)

@@ -13,11 +13,21 @@
   <body>
     <header>
       <h1>SMARTCoffee Kiosk</h1>
+<!--
+	Need to use fix this so that logout is only shown when a user is loged in, and login/signup when not logged in
+
       {% if user.is_authenticated %}
-        <a href="{% url 'logout' %}">logout</a>
+-->
+        <a href="{% url 'logout' %}">logout</a> / <a href="{% url 'login' %}">login</a> / <a href="{% url 'register' %}">signup</a>
+<!--
       {% else %}
+-->
+<!--
         <a href="{% url 'login' %}">login</a> / <a href="{% url 'register' %}">signup</a>
+-->
+<!--
       {% endif %}
+-->
       <hr>
     </header>
     <main>

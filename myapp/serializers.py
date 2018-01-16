@@ -1,4 +1,5 @@
-from myapp.models import Mode
+
+from myapp.models import Profiles
 from rest_framework import serializers
 
 #Serializers allow complex data such as querysets and model instances to be 
@@ -6,8 +7,7 @@ from rest_framework import serializers
 
 #HyperlinkedModelSerializer uses hyperlinks to represent relationships
 
-class ModeSerializer(serializers.HyperlinkedModelSerializer):
+class ProfilesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Mode
+        model = Profiles
         fields = ('url','name', 'milk','sugar', 'run')
-

@@ -1,4 +1,5 @@
 
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -44,7 +45,6 @@ type subit is used to submit a form to the server
 <h3>Do you Want Milk? Current Preference is: {{milkpref}}</h3>
 <input type= "button" class= "btn btn-primary" name="yes milk" value="Yes" />
 <input type="button" class= "btn btn-success" name="no milk" value="No" />
-
 -->
 
 <!--
@@ -72,24 +72,19 @@ the radio buttons will only allow one to be selected if they have the same name 
 		
 <br>
 <!--
-
 <h3>Do You Want Sugar? Current Preference is: {{sugarpref}}</h3>
 <form action="" method="post">{% csrf_token %}
 <input type="submit" class= "btn btn-primary" name="yes sugar" value="Yes" />
 <input type="submit" class= "btn btn-success" name="no sugar" value="No" />
 </form>
-
 <br>
-
 <form action="" method="post">{% csrf_token %} 
 <h3>Submit Coffee Order? </h3>
 <input type="submit" name="run" value="Yes" />
 </form>
 </div>
 </div>
-
 <form>
-
 <input type="radio" name="gender" value="male"> Male<br>
 <input type="radio" name="gender" value="women"> Women<br>
 </form>
@@ -103,8 +98,6 @@ the radio buttons will only allow one to be selected if they have the same name 
 
 {% endblock %}
 <!--
-
 put these at the end of the html to increase responsivness
 -->
 <!--
-
