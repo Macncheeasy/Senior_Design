@@ -68,10 +68,10 @@ def getmilkpref():
 #~ this is designed to get the value, either 0 or 1, which is whether or not to "Make the coffee"
 def getRun():
     print('getRun')
-    cur.execute('SELECT * FROM myapp_profiles')
-    data = cur.fetchone()  # (1, u'on')
+    cur.execute('SELECT * FROM myapp_profiles') #this selects all of the fields available in the table, if want specific use SELECT column1, column2 FROM table_name
+    data = cur.fetchone()# (1, u'on')
     #~ print(data)
-    return data[1]
+    return data[4]
 
 #~ This is used to reset the counter 'Run' back to zero after the process has been done
 #~ the reason for this is so after someone "orders coffee" the product will not dispense again until
@@ -85,7 +85,7 @@ def setRun():
 
 # Store current state in DB
 def setCurrentState(val):
-    query = 'UPDATE myapp_state set name = "'+val+'"' #Update statement updates columns of existing rows in the named table
+    query = 'UPDATE myapp_profiles set name = "'+val+'"' #Update statement updates columns of existing rows in the named table
 													#set clause indicated which columns to modify and the values they should be given
     cur.execute(query)   #Executes this query, makes it happen!
 
@@ -100,6 +100,7 @@ def switchOffLight(PIN):
     # Controller main function
 def runController():
     run = getRun();
+     
     if run == 1:
     #~ if the count is 1 run this 
 		milkpref = getmilkpref()

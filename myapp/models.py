@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
@@ -33,7 +32,7 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 #an id field is added automatically to the table but this can be over writted
 #name will be the databases column name
 class Profiles(models.Model):
-	name = models.CharField(max_length=50, help_text="What is Your Name ")
+	name = models.CharField(max_length=50, unique=True, help_text="What is Your Name ", error_messages={ 'unique': ("A user with that username already exists.")})
 	milk = models.CharField(max_length=50, help_text="Do you want Milk (Yes or No)")
 	sugar = models.CharField(max_length=50, help_text="Do you want sugar (Yes or No)")
 	run = models.IntegerField(help_text="Please Enter a Number")

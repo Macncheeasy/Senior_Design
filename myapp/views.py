@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 #This is essentially the controller of the application which is responsible for 
 #~ making sense of requests and producing the appropriate output
