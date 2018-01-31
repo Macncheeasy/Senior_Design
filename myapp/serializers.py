@@ -1,5 +1,5 @@
 
-from myapp.models import Profiles
+from myapp.models import Profiles, UserCreationForm
 from rest_framework import serializers
 
 #Serializers allow complex data such as querysets and model instances to be 

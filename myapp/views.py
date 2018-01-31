@@ -51,12 +51,9 @@ def register(request):
 
 def home(request):
     #Not sure if i needed this stuff, lou included it
-    #~ run = ''
-    #~ currentmode = 'auto'
-    #~ currentstate = 'off'
-    
-#if on is put in the field, within the Posted Data , this calls from the
-#index.html forum  submission
+    out = ''
+#~ #if on is put in the field, within the Posted Data , this calls from the
+#~ #index.html forum  submission
     if 'run' in request.POST:
         
         values = {"run": 1}
@@ -71,7 +68,7 @@ def home(request):
     
     
     if 'yes milk' in request.POST:
-        values = {"milk": "yes"}
+        values = {'milk': 'yes'}
         
         #This puts the data at the location state/1/ and the information
         #placed here is the values, 'on' and is authorized by the user        
@@ -79,7 +76,9 @@ def home(request):
                         data=values, auth=('pi', 'Letsgorams1!'))
         result = r.text
         output = json.loads(result)
+        #~ print(output)  #This helped solve the KeyError Issue, may need to use later
         out = output['milk']
+        
     if 'no milk' in request.POST:
         values = {"milk": "no"}
         
@@ -106,6 +105,7 @@ def home(request):
                         data=values, auth=('pi', 'Letsgorams1!'))
         result = r.text
         output = json.loads(result)
+        #~ print(output) #See Print(output) above and how helped 
         out = output['sugar']
 
     r = requests.get('http://127.0.0.1:8000/profiles/1/',

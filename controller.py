@@ -56,14 +56,14 @@ def getsugarpref():
     print('getsugarpref')
     cur.execute('SELECT * FROM myapp_profiles') #this selects all of the fields available in the table, if want specific use SELECT column1, column2 FROM table_name
     data = cur.fetchone()  # (1, u'auto') #This method retrieves the next row of a query result set and returns a single sequence or None if no more rows available
-    return data[3]
+    return data[2]
 
 # Get current state from DB
 def getmilkpref():
     print('getmilkpref')
     cur.execute('SELECT * FROM myapp_profiles')
     data = cur.fetchone()  # (1, u'on')
-    return data[2]
+    return data[1]
 
 #~ this is designed to get the value, either 0 or 1, which is whether or not to "Make the coffee"
 def getRun():
@@ -71,7 +71,7 @@ def getRun():
     cur.execute('SELECT * FROM myapp_profiles') #this selects all of the fields available in the table, if want specific use SELECT column1, column2 FROM table_name
     data = cur.fetchone()# (1, u'on')
     #~ print(data)
-    return data[4]
+    return data[3]
 
 #~ This is used to reset the counter 'Run' back to zero after the process has been done
 #~ the reason for this is so after someone "orders coffee" the product will not dispense again until
